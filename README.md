@@ -1,4 +1,4 @@
-# Estoque Fácil – Tecnologias para Internet II (Momento I)
+# Giro – Tecnologias para Internet II (Momento I)
 
 Sistema administrativo de controle de estoque para uma pequena loja.
 
@@ -18,7 +18,8 @@ Depois abra http://localhost:8000/index.html. (Abrir o HTML direto no navegador 
 - `produtos.html`, `fornecedores.html`, `clientes.html`, `pedidos.html`, `movimentacoes.html` – os 5 formulários
 - `js/app.js` – envia cada formulário com `fetch` (POST) e mostra a resposta
 - `php/*.php` – recebem a requisição, validam os campos e aplicam uma regra extra; respondem JSON (sem HTML)
-- `css/style.css` – estilo
+- `css/style.css` – estilo (paleta cinza, rosa e branco)
+- `img/logo.svg` – logotipo, usado no cabeçalho e como ícone da aba
 
 ## Entidades planejadas (7 tabelas – banco ainda não criado)
 
