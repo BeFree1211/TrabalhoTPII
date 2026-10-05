@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Estoque Fácil – Pedidos</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header><h1>Estoque Fácil – Controle de Estoque</h1></header>
+    <menutpi2>
+    <nav aria-label="Menu principal">
+        <ul>
+            <li><a href="index.html">Início</a></li>
+            <li><a href="produtos.html">Produtos</a></li>
+            <li><a href="fornecedores.html">Fornecedores</a></li>
+            <li><a href="clientes.html">Clientes</a></li>
+            <li><a href="pedidos.html" aria-current="page">Pedidos</a></li>
+            <li><a href="movimentacoes.html">Movimentações</a></li>
+        </ul>
+    </nav>
+    </menutpi2>
+    <main>
+        <div class="card">
+            <h2>Registro de pedido</h2>
+            <form id="form-pedido" data-endpoint="php/pedido.php" novalidate>
+                <tpi2></tpi2>
+                <label for="cliente_cpf">CPF do cliente</label>
+                <input type="text" id="cliente_cpf" name="cliente_cpf" placeholder="000.000.000-00" required>
+                <div class="erro" data-erro="cliente_cpf"></div>
+
+                <label for="sku">SKU do produto</label>
+                <input type="text" id="sku" name="sku" placeholder="ELE-0001" required>
+                <div class="erro" data-erro="sku"></div>
+
+                <label for="quantidade">Quantidade</label>
+                <input type="text" id="quantidade" name="quantidade" inputmode="numeric" required>
+                <div class="erro" data-erro="quantidade"></div>
+
+                <label for="preco_unitario">Preço unitário (R$)</label>
+                <input type="text" id="preco_unitario" name="preco_unitario" inputmode="decimal" required>
+                <div class="erro" data-erro="preco_unitario"></div>
+
+                <label for="forma_pagamento">Forma de pagamento</label>
+                <select id="forma_pagamento" name="forma_pagamento" required>
+                    <option value="">Selecione…</option>
+                    <option>Dinheiro</option>
+                    <option>Pix</option>
+                    <option>Cartão de crédito</option>
+                    <option>Cartão de débito</option>
+                    <option>Boleto</option>
+                </select>
+                <div class="erro" data-erro="forma_pagamento"></div>
+
+                <label for="data_pedido">Data do pedido</label>
+                <input type="date" id="data_pedido" name="data_pedido" required>
+                <div class="erro" data-erro="data_pedido"></div>
+
+                <button type="submit">Registrar pedido</button>
+            </form>
+            <div id="resultado" class="resultado" role="status"></div>
+        </div>
+        <a class="voltar" href="index.html">← Voltar à página inicial</a>
+    </main>
+    <script src="js/app.js"></script>
+</body>
+</html>
