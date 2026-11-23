@@ -117,7 +117,7 @@ nav a[aria-current="page"] {
 /* ---------- Conteúdo ---------- */
 
 main {
-    max-width: 680px;
+    max-width: 960px;
     margin: 2.5rem auto 3rem;
     padding: 0 1.25rem;
 }
@@ -282,10 +282,86 @@ footer {
     text-align: center;
 }
 
-/* ---------- Tags personalizadas exigidas no enunciado ---------- */
+/* ---------- Trabalho 2: login, tabelas e lista de reposição ---------- */
 
-menutpi2 { display: block; }
-tpi2 { display: block; height: 0; }
+main.estreito { max-width: 460px; }
+
+header { position: relative; }
+
+.usuario-logado {
+    position: absolute;
+    top: 1rem;
+    right: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    font-size: .9rem;
+    color: var(--cinza-600);
+}
+
+.usuario-logado a {
+    padding: .3rem .85rem;
+    border-radius: 999px;
+    background: var(--rosa-escuro);
+    color: var(--branco);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+button.pequeno, button.secundario {
+    width: auto;
+    margin: 0;
+    padding: .35rem .9rem;
+    font-size: .85rem;
+}
+
+button.secundario {
+    display: block;
+    width: 100%;
+    margin-top: .75rem;
+    padding: .7rem 1.5rem;
+    background: var(--branco);
+    color: var(--rosa-texto);
+    border: 1px solid var(--rosa-medio);
+}
+
+button.secundario:hover { background: var(--rosa-claro); box-shadow: none; }
+
+.dica { margin: -0.75rem 0 .5rem !important; font-size: .9rem; }
+
+.rolagem { overflow-x: auto; }
+
+table.lista {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: .9rem;
+}
+
+table.lista th {
+    text-align: left;
+    padding: .55rem .6rem;
+    border-bottom: 2px solid var(--rosa);
+    font-size: .75rem;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: var(--cinza-600);
+    white-space: nowrap;
+}
+
+table.lista td {
+    padding: .55rem .6rem;
+    border-bottom: 1px solid var(--cinza-200);
+    vertical-align: middle;
+}
+
+table.lista tbody tr:hover { background: var(--rosa-claro); }
+
+table.lista td.acoes { white-space: nowrap; text-align: right; }
+table.lista td:first-child { white-space: nowrap; }
+table.lista td.acoes button + button { margin-left: .35rem; }
+
+.repor { margin-top: 1.25rem; }
+.repor ul { margin: .5rem 0 0; padding-left: 1.2rem; color: var(--cinza-600); }
 
 /* ---------- Telas pequenas ---------- */
 
@@ -299,4 +375,5 @@ tpi2 { display: block; height: 0; }
     nav a { white-space: nowrap; }
     main { margin: 1.5rem auto 2rem; }
     .card { padding: 1.4rem; }
+    .usuario-logado { position: static; justify-content: center; margin-top: .75rem; }
 }

@@ -2,7 +2,30 @@
 declare(strict_types=1);
 require __DIR__ . '/util.php';
 iniciar();
+verificarLogin();
 
+$pdo = conectar();
+$acao = campo('acao');
+$id = campo('id');
+
+if ($acao === 'listar') {
+    $sql = $pdo->query('SELECT * FROM clientes ORDER BY nome');
+    responder(true, [], ['lista' => $sql->fetchAll()]);
+}
+
+if ($acao === 'excluir') {
+    // cliente com pedido não pode ser excluído
+    $sql = $pdo->prepare('SELECT COUNT(*) FROM pedidos WHERE cliente_id = ?');
+    $sql->execute([$id]);
+    if ($sql->fetchColumn() > 0) {
+        responder(false, ['_geral' => 'Este cliente tem pedidos e não pode ser excluído.'], [], 422);
+    }
+    $sql = $pdo->prepare('DELETE FROM clientes WHERE id = ?');
+    $sql->execute([$id]);
+    responder(true, [], ['mensagem' => 'Cliente excluído.']);
+}
+
+// cadastrar ou alterar
 $erros = [];
 obrigatorios(['nome', 'cpf', 'email', 'telefone', 'data_nascimento', 'cidade'], $erros);
 
@@ -35,12 +58,34 @@ if (!isset($erros['data_nascimento'])) {
     }
 }
 
+// o CPF é salvo sempre formatado e não pode repetir
+$c = soDigitos(campo('cpf'));
+$cpf = substr($c, 0, 3) . '.' . substr($c, 3, 3) . '.' . substr($c, 6, 3) . '-' . substr($c, 9, 2);
+
+if (!isset($erros['cpf'])) {
+    $sql = $pdo->prepare('SELECT id FROM clientes WHERE cpf = ? AND id <> ?');
+    $sql->execute([$cpf, $id === '' ? 0 : $id]);
+    if ($sql->fetch()) {
+        $erros['cpf'] = 'Já existe um cliente com este CPF.';
+    }
+}
+
 if ($erros) {
     responder(false, $erros, [], 422);
 }
 
+if ($id === '') {
+    $sql = $pdo->prepare('INSERT INTO clientes (nome, cpf, email, telefone, data_nascimento, cidade) VALUES (?, ?, ?, ?, ?, ?)');
+    $sql->execute([campo('nome'), $cpf, campo('email'), campo('telefone'), campo('data_nascimento'), campo('cidade')]);
+    $mensagem = 'Cliente cadastrado com sucesso.';
+} else {
+    $sql = $pdo->prepare('UPDATE clientes SET nome = ?, cpf = ?, email = ?, telefone = ?, data_nascimento = ?, cidade = ? WHERE id = ?');
+    $sql->execute([campo('nome'), $cpf, campo('email'), campo('telefone'), campo('data_nascimento'), campo('cidade'), $id]);
+    $mensagem = 'Cliente alterado com sucesso.';
+}
+
 responder(true, [], [
-    'mensagem' => 'Cliente validado com sucesso.',
+    'mensagem' => $mensagem,
     'idade' => $idade,
-    'categoria_cliente' => $idade >= 60 ? 'Sênior (desconto especial)' : 'Padrão',
+    'categoria_cliente' => $idade >= 60 ? 'Sênior' : 'Padrão',
 ]);

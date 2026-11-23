@@ -1,44 +1,46 @@
-# Giro – Tecnologias para Internet II (Momento I)
+# Giro | Tecnologias para Internet II (Momento II)
 
-Sistema administrativo de controle de estoque para uma pequena loja.
+Sistema administrativo de controle de estoque para uma pequena loja. No Momento II o sistema passou a usar banco de dados (MySQL) e ganhou login com sessão.
 
-## Como rodar
+## Como instalar
 
-É preciso ter o PHP instalado. Na pasta do projeto:
+1. Ligar o Apache e o MySQL no XAMPP.
+2. Executar o arquivo `banco.sql` no phpMyAdmin. Ele cria o banco `giro_estoque`, as tabelas e alguns dados de exemplo.
+3. Copiar a pasta do projeto para qualquer lugar dentro do `htdocs`.
+4. Abrir `http://localhost/nome-da-pasta/login.html`.
 
-```
-php -S localhost:8000
-```
+Para entrar no sistema use o e-mail `admin@giro.com` e a senha `admin123`.
 
-Depois abra http://localhost:8000/index.html. (Abrir o HTML direto no navegador não funciona, pois o JS precisa chamar o PHP.)
+Os links e as chamadas do JavaScript usam caminho relativo, então o sistema funciona em qualquer pasta.
 
 ## Estrutura
 
-- `index.html` – página inicial com menu
-- `produtos.html`, `fornecedores.html`, `clientes.html`, `pedidos.html`, `movimentacoes.html` – os 5 formulários
-- `js/app.js` – envia cada formulário com `fetch` (POST) e mostra a resposta
-- `php/*.php` – recebem a requisição, validam os campos e aplicam uma regra extra; respondem JSON (sem HTML)
-- `css/style.css` – estilo (paleta cinza, rosa e branco)
-- `img/logo.svg` – logotipo, usado no cabeçalho e como ícone da aba
+- `login.html` e `js/login.js` tela de login
+- `index.html` página inicial com menu e lista de produtos para repor
+- `produtos.html`, `fornecedores.html`, `clientes.html`, `pedidos.html`, `movimentacoes.html`, `usuarios.html` formulário e tabela com os dados do banco
+- `js/app.js` funções usadas por todas as páginas (envio com `fetch`, mensagens, tabela, verificar login)
+- `js/<pagina>.js` listar, editar e excluir de cada tela
+- `php/conexao.php` conexão com o banco (PDO)
+- `php/util.php` funções comuns e validações
+- `php/login.php`, `php/sessao.php`, `php/logout.php` login e sessão
+- `php/*.php` um arquivo por cadastro, recebendo `acao` = listar, excluir ou salvar
+- `banco.sql` comandos para criar o banco
 
-## Entidades planejadas (7 tabelas – banco ainda não criado)
+## Login e sessão
 
-| Tabela | Campos principais |
-|---|---|
-| categorias | id, nome |
-| fornecedores | id, razao_social, cnpj, email, telefone, cidade, uf |
-| produtos | id, categoria_id, fornecedor_id, nome, sku, preco_custo, preco_venda, estoque_minimo |
-| clientes | id, nome, cpf, email, telefone, data_nascimento, cidade |
-| pedidos | id, cliente_id, data_pedido, forma_pagamento, total |
-| itens_pedido | id, pedido_id, produto_id, quantidade, preco_unitario |
-| movimentacoes | id, produto_id, tipo, quantidade, data, responsavel, observacao |
+O `login.php` busca o usuário pelo e-mail na tabela `usuarios` (a mesma do cadastro de usuários) e confere a senha com `password_verify`. Se estiver certo, guarda o usuário em `$_SESSION['usuario']`. Todos os outros arquivos PHP chamam `verificarLogin()` e, se não tiver ninguém na sessão, respondem 401. Quando o JavaScript recebe 401 ele manda a pessoa para o `login.html`.
 
-## Regras extras por formulário
+## Tabelas
+
+usuarios, categorias, fornecedores, produtos, clientes, pedidos, itens_pedido, movimentacoes
+
+## Regras extras
 
 | Formulário | Regra |
 |---|---|
-| Produto | venda não pode ser menor que custo; calcula a margem e alerta se < 10% |
-| Fornecedor | valida dígitos do CNPJ; formata o CNPJ; define prazo de pagamento por UF |
-| Cliente | valida dígitos do CPF; exige maioridade; classifica cliente sênior (60+) |
-| Pedido | 10% de desconto para 10+ unidades, +5% no Pix; calcula o total |
-| Movimentação | saída/ajuste exigem justificativa; calcula o efeito no estoque |
+| Usuário | senha com 6 caracteres e um número; e-mail não repete; não exclui o usuário logado |
+| Produto | venda não pode ser menor que custo; calcula a margem; SKU não repete; mostra "Repor" quando o estoque está abaixo do mínimo |
+| Fornecedor | valida o CNPJ; prazo de pagamento conforme a UF |
+| Cliente | valida o CPF; exige maioridade; classifica cliente sênior (60+) |
+| Pedido | 10% de desconto para 10+ unidades, +5% no Pix; não vende mais do que tem no estoque; tira do estoque |
+| Movimentação | saída e ajuste exigem justificativa; atualiza o estoque; responsável é o usuário logado |

@@ -19,8 +19,11 @@
                 <p class="subtitulo">Controle de Estoque</p>
             </div>
         </div>
+        <div class="usuario-logado">
+            Olá, <strong id="nome-usuario"></strong>
+            <a href="php/logout.php">Sair</a>
+        </div>
     </header>
-    <menutpi2>
     <nav aria-label="Menu principal">
         <ul>
             <li><a href="index.html">Início</a></li>
@@ -29,29 +32,29 @@
             <li><a href="clientes.html">Clientes</a></li>
             <li><a href="pedidos.html" aria-current="page">Pedidos</a></li>
             <li><a href="movimentacoes.html">Movimentações</a></li>
+            <li><a href="usuarios.html">Usuários</a></li>
         </ul>
     </nav>
-    </menutpi2>
     <main>
         <div class="card">
             <h2>Registro de pedido</h2>
+            <p class="dica">O preço vem do cadastro do produto e o estoque é atualizado quando o pedido é registrado.</p>
             <form id="form-pedido" data-endpoint="php/pedido.php" novalidate>
-                <tpi2></tpi2>
-                <label for="cliente_cpf">CPF do cliente</label>
-                <input type="text" id="cliente_cpf" name="cliente_cpf" placeholder="000.000.000-00" required>
-                <div class="erro" data-erro="cliente_cpf"></div>
+                <label for="cliente_id">Cliente</label>
+                <select id="cliente_id" name="cliente_id" required>
+                    <option value="">Selecione…</option>
+                </select>
+                <div class="erro" data-erro="cliente_id"></div>
 
-                <label for="sku">SKU do produto</label>
-                <input type="text" id="sku" name="sku" placeholder="ELE-0001" required>
-                <div class="erro" data-erro="sku"></div>
+                <label for="produto_id">Produto</label>
+                <select id="produto_id" name="produto_id" required>
+                    <option value="">Selecione…</option>
+                </select>
+                <div class="erro" data-erro="produto_id"></div>
 
                 <label for="quantidade">Quantidade</label>
                 <input type="text" id="quantidade" name="quantidade" inputmode="numeric" required>
                 <div class="erro" data-erro="quantidade"></div>
-
-                <label for="preco_unitario">Preço unitário (R$)</label>
-                <input type="text" id="preco_unitario" name="preco_unitario" inputmode="decimal" required>
-                <div class="erro" data-erro="preco_unitario"></div>
 
                 <label for="forma_pagamento">Forma de pagamento</label>
                 <select id="forma_pagamento" name="forma_pagamento" required>
@@ -72,8 +75,19 @@
             </form>
             <div id="resultado" class="resultado" role="status"></div>
         </div>
+        <div class="card">
+            <h2>Pedidos registrados</h2>
+            <div class="rolagem">
+                <table class="lista">
+                    <thead><tr><th>Nº</th><th>Data</th><th>Cliente</th><th>Produto</th><th>Qtd.</th><th>Pagamento</th><th>Total</th><th>Registrado por</th></tr></thead>
+                    <tbody id="corpo-tabela"></tbody>
+                </table>
+            </div>
+        </div>
         <a class="voltar" href="index.html">← Voltar à página inicial</a>
     </main>
+    <footer>Tecnologias para Internet II – Trabalho Momento II</footer>
     <script src="js/app.js"></script>
+    <script src="js/pedidos.js"></script>
 </body>
 </html>

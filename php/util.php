@@ -4,11 +4,23 @@ declare(strict_types=1);
 // Funções compartilhadas pelos endpoints. Este arquivo não gera HTML: toda
 // resposta é JSON e quem desenha a tela é o JavaScript (js/app.js).
 
+require_once __DIR__ . '/conexao.php';
+
 function iniciar(): void
 {
     header('Content-Type: application/json; charset=utf-8');
+    session_start();
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         responder(false, ['_geral' => 'Use o método POST.'], [], 405);
+    }
+}
+
+// Usado em todos os arquivos que precisam de login.
+// Se não tiver usuário na sessão, devolve 401 e o JS manda para o login.
+function verificarLogin(): void
+{
+    if (!isset($_SESSION['usuario'])) {
+        responder(false, ['_geral' => 'Você precisa fazer login.'], [], 401);
     }
 }
 
@@ -102,6 +114,7 @@ function numero(string $valor): ?float
 
 function dataValida(string $data): ?DateTime
 {
-    $d = DateTime::createFromFormat('Y-m-d', $data);
+    // o ! zera a hora, senão a data de hoje era considerada futura
+    $d = DateTime::createFromFormat('!Y-m-d', $data);
     return ($d && $d->format('Y-m-d') === $data) ? $d : null;
 }
